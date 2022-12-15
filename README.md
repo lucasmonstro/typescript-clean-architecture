@@ -1,6 +1,6 @@
 # 📝 Description
 
-> Auth REST api
+> Auth REST api using clean architecture
 
 # 🧰 Installation
 
@@ -33,13 +33,13 @@ docker-compose up -d
 Check the database is up
 
 ```bash
-docker logs -f backend_pg
+docker logs -f {folder}-postgres-1
 ```
 
 Check that you can log into a database with `psql`
 
 ```bash
-docker exec -it backend_pg psql -U backend_pg_user backend_pg_db
+docker exec -it {folder}-postgres-1 psql -U auth_user auth_db
 ```
 
 View tables
@@ -58,56 +58,46 @@ yarn db:sync
 
 # ⌨ Development
 
-## ⚙ Running the app
+## Running the app
 
 ```bash
-# development mode
 yarn dev
-
-# production mode
-yarn start
 ```
 
 ## 🧪 Running tests per layer
 
-Creating tests database Only integration tests are supported. Backend is spun up
-on a special database
-
-Tests use their own database. To create it:
+### Core layer
 
 ```bash
-docker exec -it backend_pg psql -U backend_pg_user -c "create database backend_pg_db_test" backend_pg_db
-```
-
-```bash
-# core layer
 yarn test:core
 
-# core layer with code coverage
+# with code coverage
 yarn test:core:coverage
-
-# data layer
-yarn test:data
 ```
 
 After executing `yarn test:core:coverage`, the `coverage/` folder will be generated with
 coverage details
 
-# 📏 Lint
+### Data layer
 
-Linting codebase
+Creating tests database only integration tests are supported. Backend is spun up
+on a special database
+
+Tests use their own database. To create it:
 
 ```bash
-# getting lint issues
-yarn lint
+docker exec -it {folder}-postgres-1 psql -U auth_user -c "create database test" auth_db
+```
 
-# fixing lint issues
-yarn lint:fix
+Once the database is created, run the command below to test the `data` layer:
+
+```bash
+yarn test:data
 ```
 
 # 🧳 Migrations
 
-Run `typeorm` CLI
+Run `@mikro-orm/cli` CLI
 
 ## Automatically generating migrations
 
@@ -118,7 +108,7 @@ You can generate migration files
 
 ```bash
 # creates a file under src/entrypoints/mikroOrm/migrations/
-yarn typeorm migration:generate -n MigrationName
+yarn db:migration:create MigrationName
 ```
 
 ## Apply migrations against the local database
@@ -130,11 +120,23 @@ yarn db:sync
 Check the result of migrations using `psql` command-line tool
 
 ```bash
-docker exec -it backend_pg psql -U backend_pg_user backend_pg_db
+docker exec -it {folder}-postgres-1 psql -U auth_user auth_db
 ```
 
 ```psql
-\d 'todo'
+\d 'auth_db'
+```
+
+# 📏 Lint
+
+Linting codebase
+
+```bash
+# getting lint issues
+yarn lint
+
+# fixing lint issues
+yarn lint:fix
 ```
 
 # 📦 Building
@@ -156,7 +158,7 @@ yarn start
 
 # ✅ TODO
 
-- add e2e tests
+- add tests to entrypoints layer
 - add mikroORM config for tests and disable logging in tests
 - add JOI to validate data
 - add swagger
