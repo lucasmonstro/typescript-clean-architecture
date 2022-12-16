@@ -19,15 +19,22 @@ export const makeLoginController =
       response.status(StatusCodes.CREATED).send(jwt);
     } catch (error) {
       if (error instanceof EmailNotFoundError) {
-        response.status(StatusCodes.BAD_REQUEST).json({ error: error.name });
+        response
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ code: error.name, message: error.message });
         return;
       }
       if (error instanceof WrongPasswordError) {
-        response.status(StatusCodes.BAD_REQUEST).json({ error: error.name });
+        response
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ code: error.name, message: error.message });
         return;
       }
       response
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'InternalServerError' });
+        .json({
+          code: 'InternalServerError',
+          message: 'Internal server error',
+        });
     }
   };
