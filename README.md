@@ -105,11 +105,7 @@ Once the database is created, run the command below to test the `data` layer:
 yarn test:data
 ```
 
-# 🧳 Migrations
-
-Run `@mikro-orm/cli` CLI
-
-## Automatically generating migrations
+## Adding new migrations
 
 You can generate migration files
 
