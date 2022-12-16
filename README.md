@@ -33,13 +33,13 @@ docker-compose up -d
 Check the database is up
 
 ```bash
-docker logs -f {folder}-postgres-1
+docker logs -f auth_pg
 ```
 
 Check that you can log into a database with `psql`
 
 ```bash
-docker exec -it {folder}-postgres-1 psql -U auth_user auth_db
+docker exec -it auth_pg psql -U auth_user auth_db
 ```
 
 View tables
@@ -54,6 +54,16 @@ Run initial migrations to set up initial database tables
 
 ```bash
 yarn db:sync
+```
+
+Check the result of migrations using `psql` command-line tool
+
+```bash
+docker exec -it auth_pg psql -U auth_user auth_db
+```
+
+```psql
+\d 'auth_db'
 ```
 
 # ⌨ Development
@@ -86,7 +96,7 @@ on a special database
 Tests use their own database. To create it:
 
 ```bash
-docker exec -it {folder}-postgres-1 psql -U auth_user -c "create database test" auth_db
+docker exec -it auth_pg psql -U auth_user -c "create database test" auth_db
 ```
 
 Once the database is created, run the command below to test the `data` layer:
@@ -109,22 +119,6 @@ You can generate migration files
 ```bash
 # creates a file under src/entrypoints/mikroOrm/migrations/
 yarn db:migration:create MigrationName
-```
-
-## Apply migrations against the local database
-
-```bash
-yarn db:sync
-```
-
-Check the result of migrations using `psql` command-line tool
-
-```bash
-docker exec -it {folder}-postgres-1 psql -U auth_user auth_db
-```
-
-```psql
-\d 'auth_db'
 ```
 
 # 📏 Lint

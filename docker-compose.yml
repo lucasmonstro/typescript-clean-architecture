@@ -1,13 +1,14 @@
 version: '3.8'
 services:
   postgres:
+    container_name: auth_pg
     image: postgres:15.1-alpine
     env_file:
       - .env
     ports:
       - 5432:5432
     volumes:
-      - postgres_volume:/var/lib/postgresql/data
+      - pg_volume:/var/lib/postgresql/data
   pgadmin:
     image: dpage/pgadmin4:5.1
     environment:
@@ -16,4 +17,4 @@ services:
     ports:
       - 5433:80
 volumes:
-  postgres_volume:
+  pg_volume:
